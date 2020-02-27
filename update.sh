@@ -59,8 +59,18 @@ find /var/www -type f -exec chmod 0664 {} +
 # Disable indexes and make attempts to open anything starting with ".git"
 # result in a 404 "Not Found" error.
 
-sed -i.previous -e '/<Directory \"\/var\/www\/html\">/,/<\/Directory>/ s/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' -e '/<Directory \"\/var\/www\/html\">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All\
-    RedirectMatch 404 \/\\.git/' /etc/httpd/conf/httpd.conf
+# sed -i.previous -e '/<Directory \"\/var\/www\/html\">/,/<\/Directory>/ s/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' -e '/<Directory \"\/var\/www\/html\">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All\
+#    RedirectMatch 404 \/\\.git/' /etc/httpd/conf/httpd.conf
+
+# Copy the custom 01-mdn-samples.conf httpd configuration file to the
+# /etc/httpd/conf.d directory so it's used when we spin up the web
+# server momentarily.
+
+curl https://raw.githubusercontent.com/mdn/samples-server/master/01-mdn-samples.conf > /etc/httpd/conf.d/01-mdn-samples.conf
+
+# Remove files from the home directory that don't need to be there
+
+rm /var/www/html/01-mdn-samples.conf
 
 # Make sure the web server is running; restart it if it already is, to ensure
 # that it picks up configuration changes we've applied.
